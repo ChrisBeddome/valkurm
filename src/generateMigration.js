@@ -1,3 +1,4 @@
+import UserError from './userError.js'
 import fs from 'fs/promises'
 import path from 'path'
 import {__approot} from './pathHelpers.js'
@@ -25,7 +26,7 @@ const createDirIfNoExist = directoryPath => {
 
 const generateMigration = async (dirName, migrationName) => {
   if (!migrationName || migrationName.trim() === '') {
-    throw new Error('Please provide a valid file name.')
+    throw new UserError('Please provide a valid file name.')
   }
   const migrationDir = path.join(__approot, `../migrations/${dirName}/`)
   await createDirIfNoExist(migrationDir)
