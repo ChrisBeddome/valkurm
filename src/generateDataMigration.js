@@ -1,7 +1,7 @@
-import generateMigration from '../src/generateMigration.js'
+import generateMigration from './generateMigration.js'
 
 const userInput = process.argv[2]
-const migrationDirName = "schema"
+const migrationDirName = "data"
 try {
   await generateMigration(migrationDirName, userInput)
 } catch(e) {

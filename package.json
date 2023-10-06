@@ -4,8 +4,7 @@
   "description": "Database migration tool for node",
   "main": "exports.js",
   "type": "module",
-  "scripts": {
-  },
+  "bin": "./bin/cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ChrisBeddome/valkurm.git"

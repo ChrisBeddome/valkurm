@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path'
-import {transaction} from '../src/dbConnect.js'
-import {__approot} from '../src/pathHelpers.js'
+import {transaction} from './dbConnect.js'
+import {__approot} from '.pathHelpers.js'
 
 const getTableSetupQuery = () => (`
   CREATE TABLE IF NOT EXISTS schema_migrations (
