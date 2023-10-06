@@ -17,7 +17,7 @@ export const down = () => {
 `
 }
 
-const createDirIfNoExist(directoryPath) {
+const createDirIfNoExist = directoryPath => {
   if (!fs.exists(directoryPath)) {
     fs.mkdir(directoryPath, { recursive: true });
   } 
