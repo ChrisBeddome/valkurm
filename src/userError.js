@@ -4,3 +4,5 @@ class UserError extends Error {
     this.name = 'UserError'
   }
 }
+
+export default UserError
