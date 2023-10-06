@@ -1,0 +1,24 @@
+{
+  "name": "valkurm",
+  "version": "0.1.0",
+  "description": "Database migration tool for node",
+  "main": "exports.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChrisBeddome/valkurm.git"
+  },
+  "keywords": [
+    "node",
+    "migrations",
+    "migrate"
+  ],
+  "author": "Chris Beddome",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChrisBeddome/valkurm/issues"
+  },
+  "homepage": "https://github.com/ChrisBeddome/valkurm#readme"
+}
+
