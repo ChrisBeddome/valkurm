@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Database migration tool for node",
   "main": "exports.js",
+  "type": "module",
   "scripts": {
   },
   "repository": {
