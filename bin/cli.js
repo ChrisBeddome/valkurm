@@ -4,26 +4,28 @@ import UserError from '../src/userError.js'
 
 const COMMANDS = {
   'generate-schema-migration': {
-    path: '../src/generateSchemaMigration.js',
+    path: '../src/commands/generateSchemaMigration.js',
     args: ['name']
   }
 }
 
-const run = async (command, argsFromUser) => {
-  const options = command.args.reduce((acc, curr) => {
-    acc[curr] = argsFromUser
+const getFormattedOptions = (command, argsFromUser) => {
+  return command.args.reduce((acc, curr) => {
+    return {...acc, [curr]: argsFromUser[Object.keys(acc).length] }
   }, {})
+}
 
+const run = async (command, argsFromUser) => {
   try {
     const module = await import(command.path);
-    module.default(optionsFromUser)
+    module.run(getFormattedOptions(command, argsFromUser))
   } catch(e) {
     if (e instanceof UserError) {
       console.error(e.message);
     } else {
       console.error(e)
     }
-    proccess.exit(1)
+    process.exit(1)
   }
 }
 
