@@ -1,13 +1,10 @@
 import path from "path"
-import url from 'url';
-
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const root = path.resolve(__dirname).split('node_modules')[0]
+import {__approot} from './pathHelpers.js'
 
 let config = {};
 
 const setConfig = newConfig => {
-  config = { ...config, ...newConfig };
+  config = {...config, ...newConfig};
 }
 
 const getConfig = () => {
@@ -17,7 +14,7 @@ const getConfig = () => {
 let initialized = false
 if (!initialized) {
   try {
-    const userSuppliedConfig = (await import(path.join(root, 'valkurmConfig.js'))).default
+    const userSuppliedConfig = (await import(path.join(__approot, 'valkurmConfig.js'))).default
     setConfig(userSuppliedConfig)
     initialized = true
   } catch(e) {
@@ -27,5 +24,5 @@ if (!initialized) {
 
 export {
   setConfig,
-  getConfig,
+  getConfig
 };
