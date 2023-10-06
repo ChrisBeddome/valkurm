@@ -8,7 +8,7 @@ const getConfig = () => {
   return config;
 }
 
-module.exports = {
+export {
   setConfig,
   getConfig,
 };
