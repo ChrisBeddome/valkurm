@@ -2,7 +2,7 @@ import path from "path"
 import url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const root = path.resolve(__dirname).split('src')[0]
+const root = path.resolve(__dirname).split('node_modules')[0]
 
 let config = {};
 
