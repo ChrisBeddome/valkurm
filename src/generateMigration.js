@@ -18,10 +18,14 @@ export const down = () => {
 `
 }
 
-const createDirIfNoExist = directoryPath => {
-  if (!fs.exists(directoryPath)) {
-    fs.mkdir(directoryPath, { recursive: true });
-  } 
+const checkDirectoryExists = async directoryPath => {
+  await fs.access(directoryPath, fs.constants.F_OK | fs.constants.R_OK);
+}
+
+const createDirIfNoExist = async directoryPath => {
+  // if (!fs.exists(directoryPath)) {
+  //   fs.mkdir(directoryPath, { recursive: true });
+  // } 
 }
 
 const generateMigration = async (dirName, migrationName) => {

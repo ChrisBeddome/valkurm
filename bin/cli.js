@@ -2,17 +2,21 @@
 
 import UserError from '../src/userError.js'
 
-const EXECUTABLES = {
-  'generate-schema-migration': '../src/generateSchemaMigration.js'
+const COMMANDS = {
+  'generate-schema-migration': {
+    path: '../src/generateSchemaMigration.js',
+    args: ['name']
+  }
 }
 
-const command = process.argv[2] 
-const commandArgs = process.argv.slice(3)
+const run = async (command, argsFromUser) => {
+  const options = command.args.reduce((acc, curr) => {
+    acc[curr] = argsFromUser
+  }, {})
 
-const run = async command => {
   try {
-    const module = await import(EXECUTABLES[command]);
-    module.default(...commandArgs)
+    const module = await import(command.path);
+    module.default(optionsFromUser)
   } catch(e) {
     if (e instanceof UserError) {
       console.error(e.message);
@@ -23,20 +27,26 @@ const run = async command => {
   }
 }
 
-if (!command) {
+
+const commandNames = Object.keys(COMMANDS)
+const commandNameFromUser = process.argv[2] 
+const argsFromUser = process.argv.slice(3)
+
+if (!commandNameFromUser) {
   console.error('\nUsage: [command] [options]\n')
   console.error('Commands: ')
-  for (const command of Object.keys(EXECUTABLES)) {
-    console.error(`  ${command}`);
+  for (const commandName of commandNames) {
+    const args = COMMANDS[commandName].args
+    console.error(`  ${commandName} ${args.map(arg => '<' + arg + '>' + ' ')}`);
   }
   console.error('')
   process.exit(1)
 }
 
-if (EXECUTABLES.hasOwnProperty(command)) {
-  run(command)
+if (commandNames.includes(commandNameFromUser)) {
+  run(COMMANDS[commandNameFromUser], argsFromUser)
 } else {
-  console.error(`\nCommand '${command}' not recognized.\n`)
+  console.error(`\nCommand '${commandNameFromUser}' not recognized.\n`)
   process.exit(1)
 }
 
