@@ -3,53 +3,57 @@ import path from 'path'
 import {transaction} from './dbConnect.js'
 import {createDirIfNoExist} from './pathHelpers.js'
 
-const setupMigrationTable = async (table, connection) => {
+const setupMigrationTable = async table => {
   const query =  `
     CREATE TABLE IF NOT EXISTS ${table} (
       name VARCHAR(255) NOT NULL,
       PRIMARY KEY (name)
     )
   `
-  await connection.execute(query)
+  
+  await transaction(connection => {
+    connection.execute(query)
+  })
 }
 
-const getCompletedMigrations = async (table, connection) => {
-  return await connection.execute(`SELECT name FROM ${table}`)
+const getCompletedMigrations = async table => {
+  const rows =  await transaction(connection => {
+    connection.execute(`SELECT name FROM ${table}`)
+  })
+  return rows.map(row => row.name)
+}
+
+const getAllMigrationFileNames = async directory => {
+    return await (fs.readdir(directory))
+      .filter(filename => filename.endsWith(".js"))
 }
 
 const getFilesForMigration = async (directory, table) => {
-  const completedMigrationFileNames = (
-    await transaction(getCompletedMigrations.bind(null, table))
-  ).map(row => row.name)
-
-  const allMigrationFileNames = (
-    await fs.readdir(directory)
-  ).filter(filename => filename.endsWith(".js"))
-  
+  const completedMigrationFileNames = await getCompletedMigrations(table)
+  const allMigrationFileNames = await getAllMigrationFileNames(directory)
   return allMigrationFileNames
     .filter(filename => !completedMigrationFileNames.includes(filename))
 }
 
-const migrateOne = async (table, directory, filename, connection) => {
-  try {
-    const module = await import(path.join(directory, filename))
-    await connection.execute(module.up())
+const getMigrationQueryFromFile = async filepath => {
+  const module = await import(filepath)
+  return module.up()
+}
+
+const migrateOne = async (table, filename, query) => {
+  transaction(connection => {
+    await connection.execute(query)
     await connection.execute(`INSERT INTO ${table} (name) VALUES ('${filename}')`)
-  } catch (e) {
-    throw e
-  }
+  })
 }
 
 const migrate = async (directory, table) => {
-  try {
-    await createDirIfNoExist(directory)
-    await transaction(setupMigrationTable.bind(null, table))
-    const filesToMigrate = await getFilesForMigration(directory, table)
-    for (const filename of filesToMigrate) {
-      await transaction(migrateOne.bind(null, table, directory, filename))
-    }
-  } catch(e) {
-    throw e
+  await createDirIfNoExist(directory)
+  await setupMigrationTable(table)
+  const filesToMigrate = await getFilesForMigration(directory, table)
+  for (const filename of filesToMigrate) {
+    const migrationQuery = await getMigrationQueryFromFile(path.join(directory, filename))
+    await migrateOne(table, filename, migrationQuery)
   }
 }
 

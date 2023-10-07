@@ -18,10 +18,14 @@ export const down = () => {
 `
 }
 
-const generateMigration = async (dir, migrationName) => {
+const validateMigrationName = migrationName => {
   if (!migrationName || migrationName.trim() === '') {
     throw new UserError('Please provide a valid file name.')
   }
+}
+
+const generateMigration = async (dir, migrationName) => {
+  await validateMigrationName(migrationName)
   await createDirIfNoExist(dir)
   const fileName = generateFileName(migrationName)
   const filePath = path.join(dir, fileName)
