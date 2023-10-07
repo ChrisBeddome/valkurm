@@ -2,19 +2,27 @@ import mariadb from 'mariadb'
 import {getConfig} from './config.js'
 import UserError from './userError.js'
 
-const dbConfig = ['host', 'port', 'user', 'password', 'database'].reduce((acc, option) => {
-  if (!getConfig()[option]) {
-    throw new UserError(`missing config option: ${option}`)
-  }
-  acc[option] = getConfig()[option] 
-  return acc
-}, {})
+const getDbConfig = () => {
+  const globalConfig = getConfig()
+  let dbConfig = {}
+  const requiredConfigKeys = ['host', 'port', 'user', 'password', 'database']
+
+  requiredConfigKeys.forEach(key => {
+    if (!globalConfig[key]) {
+      throw new UserError(`missing config option: ${option}`)
+    } else {
+      dbConfig[key] = globalConfig[key]
+    }
+  })
+
+  return dbConfig
+}
 
 let conn
 
 const getConn = async () => {
   if (!conn) {
-    conn = await mariadb.createConnection(dbConfig)
+    conn = await mariadb.createConnection(getDbConfig())
   }
   return conn
 }
