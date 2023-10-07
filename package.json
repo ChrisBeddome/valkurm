@@ -19,6 +19,9 @@
   "bugs": {
     "url": "https://github.com/ChrisBeddome/valkurm/issues"
   },
-  "homepage": "https://github.com/ChrisBeddome/valkurm#readme"
+  "homepage": "https://github.com/ChrisBeddome/valkurm#readme",
+  "dependencies": {
+    "mariadb": "3.2.1"
+  }
 }
 

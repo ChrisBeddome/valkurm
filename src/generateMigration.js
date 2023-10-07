@@ -18,24 +18,32 @@ export const down = () => {
 `
 }
 
-const checkDirectoryExists = async directoryPath => {
-  await fs.access(directoryPath, fs.constants.F_OK | fs.constants.R_OK);
+const directoryExists = async directoryPath => {
+  try {
+    await fs.access(directoryPath, fs.constants.F_OK);
+    return true
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      return false
+    } else {
+      throw err
+    }
+  }
 }
 
 const createDirIfNoExist = async directoryPath => {
-  // if (!fs.exists(directoryPath)) {
-  //   fs.mkdir(directoryPath, { recursive: true });
-  // } 
+  if (!(await directoryExists(directoryPath))) {
+    await fs.mkdir(directoryPath, { recursive: true });
+  } 
 }
 
-const generateMigration = async (dirName, migrationName) => {
+const generateMigration = async (dir, migrationName) => {
   if (!migrationName || migrationName.trim() === '') {
     throw new UserError('Please provide a valid file name.')
   }
-  const migrationDir = path.join(__approot, `../migrations/${dirName}/`)
-  await createDirIfNoExist(migrationDir)
+  await createDirIfNoExist(dir)
   const fileName = generateFileName(migrationName)
-  const filePath = path.join(migrationDir, fileName)
+  const filePath = path.join(dir, fileName)
   const fileContent = generateFileContent()
   await fs.writeFile(filePath, fileContent)
 }

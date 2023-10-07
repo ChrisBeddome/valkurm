@@ -1,7 +1,12 @@
 import path from "path"
 import {__approot} from './pathHelpers.js'
 
-let config = {};
+let config = {
+  schemaMigrationPath: path.join(__approot, '/migrations/schema'),
+  dataMigrationPath: path.join(__approot, '/migrations/data'),
+  schemaMigrationTable: 'schema_migrations',
+  dataMigrationTable: 'data_migrations',
+};
 
 const setConfig = newConfig => {
   config = {...config, ...newConfig};
@@ -18,7 +23,7 @@ if (!initialized) {
     setConfig(userSuppliedConfig)
     initialized = true
   } catch(e) {
-    throw new Error(`No config found. Please export valid config object from valkurmConfig.js in your projects root: ${root}.`)
+    throw new Error(`No valid config found. Please export valid config object from valkurmConfig.js in your projects root: ${__approot}.`)
   }
 }
 

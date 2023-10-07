@@ -1,12 +1,13 @@
 import mariadb from 'mariadb'
-import config from './config.js'
+import {getConfig} from './config.js'
 import UserError from './userError.js'
 
-const dbConfig = ['host', 'port', 'user', 'password', 'database'].reduce((option, acc) => {
-  if (!config[option]) {
+const dbConfig = ['host', 'port', 'user', 'password', 'database'].reduce((acc, option) => {
+  if (!getConfig()[option]) {
     throw new UserError(`missing config option: ${option}`)
   }
-  acc[option] = config[option] 
+  acc[option] = getConfig()[option] 
+  return acc
 }, {})
 
 let conn
@@ -18,9 +19,9 @@ const getConn = async () => {
   return conn
 }
 
-const release = () => {
+const release = async () => {
   if (conn) {
-    conn.end()
+    await conn.end()
     conn = null
   }
 }
@@ -29,13 +30,14 @@ const transaction = async fn => {
   const connection = await getConn()
   try {
     await connection.beginTransaction()
-    await fn(connection)
+    const val = await fn(connection)
     await connection.commit()
+    return val
   } catch (error) {
     await connection.rollback()
     throw error
   } finally {
-    release()
+    await release()
   }
 }
 

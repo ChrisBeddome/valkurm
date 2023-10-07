@@ -6,10 +6,23 @@ const COMMANDS = {
   'generate-schema-migration': {
     path: '../src/commands/generateSchemaMigration.js',
     args: ['name']
+  },
+  'generate-data-migration': {
+    path: '../src/commands/generateDataMigration.js',
+    args: ['name']
+  },
+  'migrate-schema': {
+    path: '../src/commands/migrateSchema.js'
+  },
+  'migrate-data': {
+    path: '../src/commands/migrateData.js'
   }
 }
 
 const getFormattedOptions = (command, argsFromUser) => {
+  if (!command.args) {
+    return {}
+  }
   return command.args.reduce((acc, curr) => {
     return {...acc, [curr]: argsFromUser[Object.keys(acc).length] }
   }, {})
@@ -18,7 +31,7 @@ const getFormattedOptions = (command, argsFromUser) => {
 const run = async (command, argsFromUser) => {
   try {
     const module = await import(command.path);
-    module.run(getFormattedOptions(command, argsFromUser))
+    await module.run(getFormattedOptions(command, argsFromUser))
   } catch(e) {
     if (e instanceof UserError) {
       console.error(e.message);
@@ -28,7 +41,6 @@ const run = async (command, argsFromUser) => {
     process.exit(1)
   }
 }
-
 
 const commandNames = Object.keys(COMMANDS)
 const commandNameFromUser = process.argv[2] 
