@@ -9,7 +9,7 @@ const getDbConfig = () => {
 
   requiredConfigKeys.forEach(key => {
     if (!globalConfig[key]) {
-      throw new UserError(`missing config option: ${option}`)
+      throw new UserError(`missing config option: ${key}, please add this to your valkurmConfig.js file`)
     } else {
       dbConfig[key] = globalConfig[key]
     }

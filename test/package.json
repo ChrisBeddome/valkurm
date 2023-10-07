@@ -2,6 +2,10 @@
   "name": "valkurm-test",
   "version": "1.0.0",
   "description": "test application for valkurm package",
+  "type": "module",
+  "scripts": {
+    "valkurm": "valkurm"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ChrisBeddome/valkurm.git"

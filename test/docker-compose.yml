@@ -1,0 +1,42 @@
+name: valkurm_test
+
+services:
+
+  db:
+    build:
+      dockerfile: ./Dockerfile.db
+    command: mariadbd --port ${DB_PORT}
+    networks:
+      primary:
+        aliases:
+          - ${DB_HOST}
+    env_file:
+      - .env
+    restart: "no"
+
+  test:
+    depends_on:
+      - db
+    build:
+      context: ../
+      dockerfile: ./test/Dockerfile.test
+      args:
+        - TEST_WORKDIR=${TEST_WORKDIR}
+    command: tail -f /dev/null
+    networks:
+      - primary
+    env_file:
+      - .env
+    volumes:
+      - ../test:/${TEST_WORKDIR}/
+      - ../package/:${TEST_WORKDIR}/../package/
+      - node_modules_test:${TEST_WORKDIR}/node_modules
+      - node_modules_package:${TEST_WORKDIR}/../package/node_modules
+    restart: "no"
+
+networks:
+  primary: {}
+
+volumes:
+  node_modules_test: {}
+  node_modules_package: {}

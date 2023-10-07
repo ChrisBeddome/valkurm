@@ -11,5 +11,4 @@ Run the following commands against the test container:
 npm install
 npm install --prefix ../package/
 npm link ../package
-npm link valkurm
 ```
