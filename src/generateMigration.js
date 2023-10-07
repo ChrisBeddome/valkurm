@@ -1,7 +1,7 @@
 import UserError from './userError.js'
 import fs from 'fs/promises'
 import path from 'path'
-import {__approot} from './pathHelpers.js'
+import {__approot, createDirIfNoExist} from './pathHelpers.js'
 
 const getDateString = () => new Date().toISOString().replace(/[-T:.]/g, '')
 
@@ -16,25 +16,6 @@ export const down = () => {
   // return SQL query for migration down
 }
 `
-}
-
-const directoryExists = async directoryPath => {
-  try {
-    await fs.access(directoryPath, fs.constants.F_OK);
-    return true
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      return false
-    } else {
-      throw err
-    }
-  }
-}
-
-const createDirIfNoExist = async directoryPath => {
-  if (!(await directoryExists(directoryPath))) {
-    await fs.mkdir(directoryPath, { recursive: true });
-  } 
 }
 
 const generateMigration = async (dir, migrationName) => {

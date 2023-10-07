@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import {transaction} from './dbConnect.js'
+import {createDirIfNoExist} from './pathHelpers.js'
 
 const setupMigrationTable = async (table, connection) => {
   const query =  `
@@ -41,6 +42,7 @@ const migrateOne = async (table, directory, filename, connection) => {
 
 const migrate = async (directory, table) => {
   try {
+    await createDirIfNoExist(directory)
     await transaction(setupMigrationTable.bind(null, table))
     const filesToMigrate = await getFilesForMigration(directory, table)
     for (const filename of filesToMigrate) {

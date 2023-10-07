@@ -50,7 +50,7 @@ if (!commandNameFromUser) {
   console.error('\nUsage: [command] [options]\n')
   console.error('Commands: ')
   for (const commandName of commandNames) {
-    const args = COMMANDS[commandName].args
+    const args = COMMANDS[commandName].args || []
     console.error(`  ${commandName} ${args.map(arg => '<' + arg + '>' + ' ')}`);
   }
   console.error('')
