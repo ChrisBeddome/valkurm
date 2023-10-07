@@ -31,7 +31,7 @@ const initializeConfig = async () => {
   }
 }
 
-initializeConfig()
+await initializeConfig()
 
 export {
   setConfig,
