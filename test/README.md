@@ -12,3 +12,7 @@ npm install
 npm install --prefix ../package/
 npm link ../package
 ```
+
+### Usage
+
+Automated tests can be executed by running `npm run test` against the test container
