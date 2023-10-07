@@ -19,6 +19,9 @@
     "url": "https://github.com/ChrisBeddome/valkurm/issues"
   },
   "homepage": "https://github.com/ChrisBeddome/valkurm#readme",
+  {
+    "files": ["/bin", "/src"]
+  },
   "dependencies": {
     "mariadb": "3.2.1"
   }
