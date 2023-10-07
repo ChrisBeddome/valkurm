@@ -2,7 +2,7 @@
 
 import UserError from '../src/userError.js'
 
-const COMMANDS = {
+const COMMANDS = Object.freeze({
   'generate-schema-migration': {
     path: '../src/commands/generateSchemaMigration.js',
     args: ['name']
@@ -17,7 +17,7 @@ const COMMANDS = {
   'migrate-data': {
     path: '../src/commands/migrateData.js'
   }
-}
+})
 
 // takes user input ie: valkurm genereate-schema-migration migration1
 // and runs it against the COMMAND args to tranform into:
