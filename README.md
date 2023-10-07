@@ -49,7 +49,21 @@ Setup a script in your package.json file, this alias is necessary to locate your
 ```sh
 npm run valkurm generate-schema-migration <migration_name>
 ```
-This will generate a timestamped file in your the `shcemaMigrationPath` directory, the same can be done for data migrations:
+This will generate a timestamped file in the `schemaMigrationPath` directory, of the form:
+
+```javascript
+const up = () => {
+    // return sql
+}
+
+const down = () => {
+    // return sql
+}
+```
+
+The `up` and `down` functions must return valid SQL which will be run during the migration step. Only the `up()` function is required, though if you wish to support rollbacks, you must provide a return value for the `down()` function as well.
+
+Data migrations work the same way:
 ```sh
 npm run valkurm generate-data-migration <migration_name>
 ```
