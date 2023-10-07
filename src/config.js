@@ -19,7 +19,7 @@ const getConfig = () => {
 }
 
 let initialized = false
-const initializeConfig = () => {
+const initializeConfig = async () => {
   if (!initialized) {
     try {
       const userSuppliedConfig = (await import(path.join(__approot, 'valkurmConfig.js'))).default
