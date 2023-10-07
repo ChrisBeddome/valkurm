@@ -4,7 +4,8 @@
   "description": "test application for valkurm package",
   "type": "module",
   "scripts": {
-    "valkurm": "valkurm"
+    "valkurm": "valkurm",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ChrisBeddome/valkurm/issues"
   },
-  "homepage": "https://github.com/ChrisBeddome/valkurm#readme"
+  "homepage": "https://github.com/ChrisBeddome/valkurm#readme",
+  "devDependencies": {
+    "jest": "^29.3.1"
+  }
 }
