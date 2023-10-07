@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import UserError from '../src/userError.js'
+import { SqlError } from 'mariadb'
 
 const COMMANDS = Object.freeze({
   'generate-schema-migration': {
@@ -33,12 +34,18 @@ const getFormattedOptions = (command, argsFromUser) => {
 
 const runCommand = async (command, argsFromUser) => {
   const module = await import(command.path)
-  await module.run(getFormattedOptions(command, argsFromUser))
+  return await module.run(getFormattedOptions(command, argsFromUser))
 }
 
 const handleError = error => {
   if (error instanceof UserError) {
     console.error(error.message)
+  } else if (error instanceof SqlError) {
+    console.error("SQL error:")
+    console.error(error.sqlMessage)
+    console.error("in:")
+    console.error(error.sql)
+    console.error()
   } else {
     console.error(error)
   }
@@ -67,7 +74,10 @@ const main = async () => {
   if (commandNames.includes(commandNameFromUser)) {
     try {
       const argsFromUser = process.argv.slice(3)
-      await runCommand(COMMANDS[commandNameFromUser], argsFromUser)
+      const message = await runCommand(COMMANDS[commandNameFromUser], argsFromUser)
+      if (message) {
+        console.log(message)
+      }
     } catch(error) {
       handleError(error)
     }

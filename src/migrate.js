@@ -2,6 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import {transaction} from './dbConnect.js'
 import {createDirIfNoExist} from './pathHelpers.js'
+import UserError from './userError.js'
 
 const setupMigrationTable = async table => {
   const query =  `
@@ -11,21 +12,21 @@ const setupMigrationTable = async table => {
     )
   `
   
-  await transaction(connection => {
-    connection.execute(query)
+  await transaction(async connection => {
+    await connection.execute(query)
   })
 }
 
 const getCompletedMigrations = async table => {
-  const rows =  await transaction(connection => {
-    connection.execute(`SELECT name FROM ${table}`)
+  const rows = await transaction(async connection => {
+    return await connection.execute(`SELECT name FROM ${table}`)
   })
   return rows.map(row => row.name)
 }
 
 const getAllMigrationFileNames = async directory => {
-    return await (fs.readdir(directory))
-      .filter(filename => filename.endsWith(".js"))
+  const files = await fs.readdir(directory)
+  return files.filter(filename => filename.endsWith(".js"))
 }
 
 const getFilesForMigration = async (directory, table) => {
@@ -36,12 +37,16 @@ const getFilesForMigration = async (directory, table) => {
 }
 
 const getMigrationQueryFromFile = async filepath => {
-  const module = await import(filepath)
-  return module.up()
+  try {
+    const module = await import(filepath)
+    return module.up()
+  } catch (e) {
+    throw new UserError(`It is likely that the file ${filepath} contains (javascript) syntax errors`)
+  }
 }
 
 const migrateOne = async (table, filename, query) => {
-  transaction(connection => {
+  await transaction(async connection => {
     await connection.execute(query)
     await connection.execute(`INSERT INTO ${table} (name) VALUES ('${filename}')`)
   })

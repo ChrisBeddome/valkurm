@@ -31,6 +31,7 @@ const generateMigration = async (dir, migrationName) => {
   const filePath = path.join(dir, fileName)
   const fileContent = generateFileContent()
   await fs.writeFile(filePath, fileContent)
+  return filePath
 }
 
 export default generateMigration
