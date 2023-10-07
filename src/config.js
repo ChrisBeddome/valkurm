@@ -1,12 +1,14 @@
 import path from "path"
 import {__approot} from './pathHelpers.js'
 
-let config = {
+const defaults = {
   schemaMigrationPath: path.join(__approot, '/migrations/schema'),
   dataMigrationPath: path.join(__approot, '/migrations/data'),
   schemaMigrationTable: 'schema_migrations',
   dataMigrationTable: 'data_migrations',
 };
+
+let config = {...defaults}
 
 const setConfig = newConfig => {
   config = {...config, ...newConfig};
