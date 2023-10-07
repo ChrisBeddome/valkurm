@@ -1,6 +1,6 @@
 {
   "name": "valkurm",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Database migration tool for node",
   "type": "module",
   "bin": "./bin/cli.js",
