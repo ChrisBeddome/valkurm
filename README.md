@@ -1,5 +1,5 @@
 # Valkurm
-Database migration tool for node
+MySQL/MariaDB migration tool for node
 
 ### Installation
 

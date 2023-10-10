@@ -1,7 +1,7 @@
 {
   "name": "valkurm",
-  "version": "1.1.0",
-  "description": "Database migration tool for node",
+  "version": "1.2.0",
+  "description": "MySQL/MariaDB migration tool for node",
   "type": "module",
   "bin": "./bin/cli.js",
   "repository": {
@@ -9,9 +9,10 @@
     "url": "git+https://github.com/ChrisBeddome/valkurm.git"
   },
   "keywords": [
-    "node",
     "migrations",
-    "migrate"
+    "migrate",
+    "mysql",
+    "mariadb"
   ],
   "author": "Chris Beddome",
   "license": "MIT",
