@@ -37,12 +37,15 @@ const getFilesForMigration = async (directory, table) => {
 }
 
 const getMigrationQueryFromFile = async filepath => {
+  let query
   try {
     const module = await import(filepath)
-    return module.up()
+    query = module.up()
   } catch (e) {
     throw new UserError(`It is likely that the file ${filepath} contains (javascript) syntax errors`)
   }
+  if (!query) throw new UserError(`Must return SQL string from ${filepath} up()`)
+  return query
 }
 
 const migrateOne = async (table, filename, query) => {

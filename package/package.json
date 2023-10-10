@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/ChrisBeddome/valkurm#readme",
   "dependencies": {
-    "mariadb": "3.2.1"
+    "mysql2": "3.6.1"
   }
 }
 
