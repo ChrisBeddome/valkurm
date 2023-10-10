@@ -1,8 +1,6 @@
 import path from 'path'
-import url from 'url'
 import fs from 'fs/promises'
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 const __approot = process.cwd()
 
 const directoryExists = async directoryPath => {
@@ -24,4 +22,4 @@ const createDirIfNoExist = async directoryPath => {
   } 
 }
 
-export {__dirname, __approot, createDirIfNoExist}
+export { __approot, createDirIfNoExist}
