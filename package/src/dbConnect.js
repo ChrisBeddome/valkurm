@@ -40,7 +40,10 @@ const transaction = async fn => {
   let result
   try {
     await connection.beginTransaction()
-    result = await fn(connection)
+    result = await fn(async query => {
+      const [rows, fields] = await connection.execute(query)
+      return rows
+    })
     await connection.commit()
   } catch (error) {
     await connection.rollback()

@@ -44,6 +44,10 @@ const handleError = error => {
     console.error(error.sqlMessage)
     console.error("in:")
     console.error(error.sql)
+    if (error.sqlOrigin) {
+      console.error("file:")
+      console.error(error.sqlOrigin)
+    }
     console.error()
   } else {
     console.error(error)

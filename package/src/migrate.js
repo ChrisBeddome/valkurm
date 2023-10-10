@@ -12,14 +12,14 @@ const setupMigrationTable = async table => {
     )
   `
   
-  await transaction(async connection => {
-    await connection.execute(query)
+  await transaction(async runQuery => {
+    await runQuery(query)
   })
 }
 
 const getCompletedMigrations = async table => {
-  const rows = await transaction(async connection => {
-    return await connection.execute(`SELECT name FROM ${table}`)
+  const rows = await transaction(async runQuery => {
+    return await runQuery(`SELECT name FROM ${table}`)
   })
   return rows.map(row => row.name)
 }
@@ -49,9 +49,14 @@ const getMigrationQueryFromFile = async filepath => {
 }
 
 const migrateOne = async (table, filename, query) => {
-  await transaction(async connection => {
-    await connection.execute(query)
-    await connection.execute(`INSERT INTO ${table} (name) VALUES ('${filename}')`)
+  await transaction(async runQuery => {
+    try {
+      await runQuery(query)
+    } catch(e) {
+      e.sqlOrigin = filename
+      throw e
+    }
+    await runQuery(`INSERT INTO ${table} (name) VALUES ('${filename}')`)
   })
 }
 
