@@ -1,72 +1,49 @@
-import {exec, spawn} from 'child_process'
+import {execSync} from 'child_process'
 
-const runCommand = commandArgs => {
-  let output = {
-    stdout: '',
-    stderr: ''
+const exitCodeFromCommand = command => {
+  let exitCode
+  try {
+    execSync(command).toString()
+  } 
+  catch (error) {
+    exitCode = error.status
   }
-  const process = spawn("npm", ["run", "valkurm", ...commandArgs ])
-  process.stdout.on("data", data => {
-    output.stdout += data.toString()
-  })
-  process.stderr.on("data", data => {
-    output.stderr += data.toString()
-  })
-  return [process, output]
-} 
-
-const shouldExitWithCode = (expectedCode, process , done) => {
-  process.on("exit", code => {
-    try {
-      expect(code).toBe(expectedCode);
-      done()
-    } catch(error) {
-      done(error)
-    }
-  });
+  return exitCode
 }
 
-const outputShouldMatch = (output, key, matcher, process, done) => {
-  process.on("exit", _code => {
-    try {
-      expect(output[key]).toMatch(matcher)
-      done()
-    } catch(error) {
-      done(error)
-    }
-  });
+const outputFromCommand = (command, fileDescriptor) => {
+  let output
+  try {
+    execSync(command).toString()
+  } 
+  catch (error) {
+    output = error[fileDescriptor].toString()
+  }
+  return output
 }
 
 describe("entry executable", () => {
-
-  let process, output
-
   describe("when given no command", () => {
-    beforeEach(() => {
-      [process, output] = runCommand([])
+    const command = 'npm run valkurm'
+    it(`should exit with code 1`, () => {
+      const code = exitCodeFromCommand(command)
+      expect(code).toBe(1)
     })
-
-    it(`should exit with code 1`, done => {
-      shouldExitWithCode(1, process, done)
-    })
-
-    it("should output usage information", done => {
-      outputShouldMatch(output, 'stderr', /Usage:/, process, done)
+    it("should output usage information", () => {
+      const stderr = outputFromCommand(command, 'stderr')
+      expect(stderr).toMatch(/Usage:/)
     })
   })
   
   describe("when given invalid command", () => {
-    beforeEach(() => {
-      [process, output] = runCommand(["sdfsdf"])
+    const command = 'npm run valkurm this-is-an-invalid-command'
+    it(`should exit with code 1`, () => {
+      const code = exitCodeFromCommand(command)
+      expect(code).toBe(1)
     })
-
-    it(`should exit with code 1`, done => {
-      shouldExitWithCode(1, process, done)
-    })
-
-    it("should output usage information", done => {
-      outputShouldMatch(output, 'stderr', /Command 'sdfsdf' not recognized/, process, done)
+    it("should output usage information", () => {
+      const stderr = outputFromCommand(command, 'stderr')
+      expect(stderr).toMatch(/Command 'this-is-an-invalid-command' not recognized/)
     })
   })
-
 })
