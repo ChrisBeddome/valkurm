@@ -1,23 +1,12 @@
-import {execSync} from 'child_process'
-
-const runCommand = command => {
-  let output = {}, exitCode
-  try {
-    output.stdout = execSync(command).toString()
-  } 
-  catch (error) {
-    output.stderr = error.stderr.toString()
-    exitCode = error.status
-  }
-  return [output, exitCode]
-}
-
+import  {runCommand, restoreGlobalConfig, deleteGlobalConfig} from '../helpers.js'
 
 describe('entry executable', () => {
   let command, code, output
+
   beforeEach(() => {
     [output, code] = runCommand(command)
   })
+
   describe('when given no command', () => {
     beforeAll(() => {
       command = 'npm run valkurm'
@@ -48,6 +37,9 @@ describe('entry executable', () => {
         command = 'npm run valkurm generate-schema-migration'
       })
       describe('when no valkurmConfig.js exists', () => {
+        beforeAll(() => {
+          deleteGlobalConfig()
+        })
         it(`should exit with code 1`, () => {
           expect(code).toBe(1)
         })
@@ -55,6 +47,36 @@ describe('entry executable', () => {
           expect(output.stderr).toMatch(/No valid config found./)
         })
       })
+
+      describe('when valid valkurmConfig.js exists', () => {
+        beforeAll(() => {
+          restoreGlobalConfig()
+        })
+
+        describe('when passed no options', () => {
+          it(`should exit with code 1`, () => {
+            expect(code).toBe(1)
+          })
+          it('should complain about missing name arg', () => {
+            expect(output.stderr).toMatch(/Please provide a valid file name./)
+          })
+        })
+
+        describe('when passed name', () => {
+          const migrationName = 'test-migration'
+          beforeAll(() => {
+            command = `npm run valkurm generate-schema-migration ${migrationName}`
+          })
+          it('should not output any errors', () => {
+            expect(output.stderr).toBeFalsy()
+          })
+          it('should output success message that includes filename', () => {
+            let regex = new RegExp(`Generated file: [\\w._\\/]+${migrationName}.js`);
+            expect(output.stdout).toMatch(regex)
+          })
+        })
+      })
+
     })
   })
 })
