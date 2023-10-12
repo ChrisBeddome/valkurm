@@ -1,55 +1,60 @@
 import {execSync} from 'child_process'
 
-const exitCodeFromCommand = command => {
-  let exitCode
+const runCommand = command => {
+  let output = {}, exitCode
   try {
-    execSync(command).toString()
+    output.stdout = execSync(command).toString()
   } 
   catch (error) {
+    output.stderr = error.stderr.toString()
     exitCode = error.status
   }
-  return exitCode
+  return [output, exitCode]
 }
 
-const outputFromCommand = (command, fileDescriptor) => {
-  let output
-  try {
-    execSync(command).toString()
-  } 
-  catch (error) {
-    output = error[fileDescriptor].toString()
-  }
-  return output
-}
 
 describe('entry executable', () => {
+  let command, code, output
+  beforeEach(() => {
+    [output, code] = runCommand(command)
+  })
   describe('when given no command', () => {
-    const command = 'npm run valkurm'
+    beforeAll(() => {
+      command = 'npm run valkurm'
+    })
     it(`should exit with code 1`, () => {
-      const code = exitCodeFromCommand(command)
       expect(code).toBe(1)
     })
     it('should output usage information', () => {
-      const stderr = outputFromCommand(command, 'stderr')
-      expect(stderr).toMatch(/Usage:/)
+      expect(output.stderr).toMatch(/Usage:/)
     })
   })
   
   describe('when given invalid command', () => {
-    const command = 'npm run valkurm this-is-an-invalid-command'
+    beforeAll(() => {
+      command = 'npm run valkurm this-is-an-invalid-command'
+    })
     it(`should exit with code 1`, () => {
-      const code = exitCodeFromCommand(command)
       expect(code).toBe(1)
     })
     it('should output usage information', () => {
-      const stderr = outputFromCommand(command, 'stderr')
-      expect(stderr).toMatch(/Command 'this-is-an-invalid-command' not recognized/)
+      expect(output.stderr).toMatch(/Command 'this-is-an-invalid-command' not recognized/)
     })
   })
 
   describe('when given valid command', () => {
-    describe('when command = generate-schema-migration' () => {
-      const command = 'npm run valkurm generate-schema-migration'
+    describe('when command = generate-schema-migration', () => {
+      beforeAll(() => {
+        command = 'npm run valkurm generate-schema-migration'
+      })
+      describe('when no valkurmConfig.js exists', () => {
+        it(`should exit with code 1`, () => {
+          expect(code).toBe(1)
+        })
+        it('should complain about missing config', () => {
+          expect(output.stderr).toMatch(/No valid config found./)
+        })
+      })
     })
   })
 })
