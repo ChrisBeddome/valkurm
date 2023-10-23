@@ -2,9 +2,29 @@ import {execSync} from 'child_process'
 import fs from 'fs'
 import path from 'path'
 
+const MIGRATIONS_DIR_PATH = new URL('../migrations/', import.meta.url)
+
+const getMigrationFiles = subdir => {
+  const dir = new URL(subdir, MIGRATIONS_DIR_PATH)
+  let files = []
+  if (fs.existsSync(dir)) {
+    files = fs.readdirSync(dir)
+  }
+  return files
+}
+
+const getSchemaMigrationFiles = () => {
+  return getMigrationFiles('schema')
+}
+
+const getDataMigrationFiles = () => {
+  return getMigrationFiles('data')
+}
+
 const deleteMigrationsDirectory = () => {
-  const dirpath = new URL('../migrations/', import.meta.url);
-  fs.rmSync(dirpath, {recursive: true})
+  if (fs.existsSync(MIGRATIONS_DIR_PATH)) {
+    fs.rmSync(MIGRATIONS_DIR_PATH, {recursive: true})
+  }
 }
 
 const deleteGlobalConfig = () => {
@@ -32,4 +52,5 @@ const runCommand = command => {
   return [output, exitCode]
 }
 
-export {runCommand, restoreGlobalConfig, deleteGlobalConfig, deleteMigrationsDirectory}
+
+export {runCommand, restoreGlobalConfig, deleteGlobalConfig, deleteMigrationsDirectory, getSchemaMigrationFiles, getDataMigrationFiles}
