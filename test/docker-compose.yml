@@ -12,6 +12,8 @@ services:
           - ${DB_HOST}
     env_file:
       - .env
+    volumes:
+      - data:/var/lib/mysql
     restart: "no"
 
   test:
@@ -22,6 +24,7 @@ services:
       dockerfile: ./test/Dockerfile.test
       args:
         - TEST_WORKDIR=${TEST_WORKDIR}
+        - PACKAGE_WORKDIR=${PACKAGE_WORKDIR}
     command: tail -f /dev/null
     networks:
       - primary
@@ -29,14 +32,15 @@ services:
       - .env
     volumes:
       - ../test:/${TEST_WORKDIR}/
-      - ../package/:${TEST_WORKDIR}/../package/
+      - ../package/:${PACKAGE_WORKDIR}/
       - node_modules_test:${TEST_WORKDIR}/node_modules
-      - node_modules_package:${TEST_WORKDIR}/../package/node_modules
+      - node_modules_package:${PACKAGE_WORKDIR}/node_modules
     restart: "no"
 
 networks:
   primary: {}
 
 volumes:
+  data: {}
   node_modules_test: {}
   node_modules_package: {}

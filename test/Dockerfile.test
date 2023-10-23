@@ -1,6 +1,7 @@
 FROM ubuntu:22.04
 
 ARG TEST_WORKDIR
+ARG PACKAGE_WORKDIR
 
 RUN apt update
 RUN apt install -y ca-certificates curl gnupg
@@ -14,6 +15,7 @@ RUN mkdir -p /etc/apt/keyrings; \
     apt install nodejs -y;
 
 WORKDIR ${TEST_WORKDIR}
-
 COPY ./test .
-COPY ./package ../package/
+
+WORKDIR ${PACKAGE_WORKDIR}
+COPY ./package .
