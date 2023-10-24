@@ -1,6 +1,6 @@
 {
   "name": "valkurm",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "MySQL/MariaDB migration tool for node",
   "type": "module",
   "bin": "./bin/cli.js",
