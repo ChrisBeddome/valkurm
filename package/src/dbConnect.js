@@ -3,7 +3,9 @@ import {getConfig} from './config.js'
 import UserError from './userError.js'
 
 const getDbConfig = () => {
-  let dbConfig = {}
+  let dbConfig = {
+    multipleStatements: true
+  }
 
   const globalConfig = getConfig()
   const requiredUserConfigKeys = ['host', 'port', 'user', 'password', 'database']
@@ -41,7 +43,7 @@ const transaction = async fn => {
   try {
     await connection.beginTransaction()
     result = await fn(async query => {
-      const [rows, fields] = await connection.execute(query)
+      const [rows, fields] = await connection.query(query)
       return rows
     })
     await connection.commit()
