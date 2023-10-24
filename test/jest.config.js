@@ -1,3 +1,4 @@
 export default {
-  setupFilesAfterEnv: ['./testSetup.js']
+  setupFilesAfterEnv: ['./testSetup.js'],
+  globalTeardown: "./testTeardown.js"
 }

@@ -53,4 +53,11 @@ const runCommand = command => {
 }
 
 
-export {runCommand, restoreGlobalConfig, deleteGlobalConfig, deleteMigrationsDirectory, getSchemaMigrationFiles, getDataMigrationFiles}
+export {
+  runCommand,
+  restoreGlobalConfig,
+  deleteGlobalConfig,
+  deleteMigrationsDirectory,
+  getSchemaMigrationFiles,
+  getDataMigrationFiles
+}
