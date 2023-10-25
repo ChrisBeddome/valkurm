@@ -4,6 +4,12 @@ import path from 'path'
 
 const MIGRATIONS_DIR_PATH = new URL('../migrations/', import.meta.url)
 
+const createDirIfNoExist = directoryPath => {
+  if (!fs.existsSync(directoryPath)) {
+    fs.mkdirSync(directoryPath, { recursive: true })
+  }
+}
+
 const getMigrationFiles = subdir => {
   const dir = new URL(subdir, MIGRATIONS_DIR_PATH)
   let files = []
@@ -25,6 +31,12 @@ const deleteMigrationsDirectory = () => {
   if (fs.existsSync(MIGRATIONS_DIR_PATH)) {
     fs.rmSync(MIGRATIONS_DIR_PATH, {recursive: true})
   }
+}
+
+const resetMigrationsDirectory = () => {
+  deleteMigrationsDirectory()
+  createDirIfNoExist(new URL('./schema', MIGRATIONS_DIR_PATH))
+  createDirIfNoExist(new URL('./data', MIGRATIONS_DIR_PATH))
 }
 
 const deleteGlobalConfig = () => {
@@ -58,6 +70,7 @@ export {
   restoreGlobalConfig,
   deleteGlobalConfig,
   deleteMigrationsDirectory,
+  resetMigrationsDirectory,
   getSchemaMigrationFiles,
   getDataMigrationFiles
 }
