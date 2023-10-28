@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
     build:
-      context: ../
+      context: ../../
       dockerfile: ./test/Dockerfile.test
       args:
         - TEST_WORKDIR=${TEST_WORKDIR}
