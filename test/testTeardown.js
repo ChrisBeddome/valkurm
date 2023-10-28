@@ -1,5 +1,5 @@
-import {deleteMigrationsDirectory} from './tests/helpers.js'
-import cleanDatabase from './cleanDatabase.js'
+import {deleteMigrationsDirectory} from './tests/fileHelpers.js'
+import {cleanDatabase} from './tests/databaseHelpers.js'
 
 const teardown = () => {
   deleteMigrationsDirectory()

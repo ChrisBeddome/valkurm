@@ -1,4 +1,4 @@
-import {deleteMigrationsDirectory} from './tests/helpers.js'
+import {deleteMigrationsDirectory} from './tests/fileHelpers.js'
 
 beforeAll(() => {
   deleteMigrationsDirectory()

@@ -64,10 +64,13 @@ const migrate = async (directory, table) => {
   await createDirIfNoExist(directory)
   await setupMigrationTable(table)
   const filesToMigrate = await getFilesForMigration(directory, table)
+  let successCount = 0
   for (const filename of filesToMigrate) {
     const migrationQuery = await getMigrationQueryFromFile(path.join(directory, filename))
     await migrateOne(table, filename, migrationQuery)
+    successCount++
   }
+  return successCount
 }
 
 export default migrate

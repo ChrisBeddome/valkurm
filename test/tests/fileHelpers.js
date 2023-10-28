@@ -1,8 +1,17 @@
-import {execSync} from 'child_process'
 import fs from 'fs'
 import path from 'path'
 
 const MIGRATIONS_DIR_PATH = new URL('../migrations/', import.meta.url)
+const MIGRATION_EXAMPLES_DIR_PATH = new URL('../migration_examples/', import.meta.url)
+
+const copyFiles = (sourceDir, targetDir) => {
+  const files = fs.readdirSync(sourceDir)
+  files.forEach(file => {
+    const sourceFilePath = new URL(file, sourceDir)
+    const targetFilePath = new URL(file, targetDir)
+    fs.copyFileSync(sourceFilePath, targetFilePath)
+  })
+}
 
 const createDirIfNoExist = directoryPath => {
   if (!fs.existsSync(directoryPath)) {
@@ -39,38 +48,41 @@ const resetMigrationsDirectory = () => {
   createDirIfNoExist(new URL('./data', MIGRATIONS_DIR_PATH))
 }
 
+const setupMigrationFiles = (type, exampleGroup) => {
+  resetMigrationsDirectory()
+  const exampleDir = new URL(`./${exampleGroup}/`, MIGRATION_EXAMPLES_DIR_PATH)
+  const targetDir = new URL(`./${type}/`, MIGRATIONS_DIR_PATH) 
+  copyFiles(exampleDir, targetDir)
+}
+
+const setupSchemaMigrationFiles = exampleGroup => {
+  setupMigrationFiles('schema', exampleGroup)
+}
+
+const setupDataMigrationFiles = exampleGroup => {
+  setupMigrationFiles('data', exampleGroup)
+}
+
 const deleteGlobalConfig = () => {
-  const filepath = new URL('../valkurmConfig.js', import.meta.url);
+  const filepath = new URL('../valkurmConfig.js', import.meta.url)
   if (fs.existsSync(filepath)) {
     fs.unlinkSync(filepath)
   }
 }
 
 const restoreGlobalConfig = () => {
-  const sourceFilepath = new URL('../valkurmConfig.js.backup', import.meta.url);
-  const destFilepath = new URL('../valkurmConfig.js', import.meta.url);
+  const sourceFilepath = new URL('../valkurmConfig.js.backup', import.meta.url)
+  const destFilepath = new URL('../valkurmConfig.js', import.meta.url)
   fs.copyFileSync(sourceFilepath, destFilepath)
 }
 
-const runCommand = command => {
-  let output = {}, exitCode
-  try {
-    output.stdout = execSync(command).toString()
-  } 
-  catch (error) {
-    output.stderr = error.stderr.toString()
-    exitCode = error.status
-  }
-  return [output, exitCode]
-}
-
-
 export {
-  runCommand,
   restoreGlobalConfig,
   deleteGlobalConfig,
   deleteMigrationsDirectory,
   resetMigrationsDirectory,
+  setupSchemaMigrationFiles,
+  setupDataMigrationFiles,
   getSchemaMigrationFiles,
   getDataMigrationFiles
 }
