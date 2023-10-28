@@ -44,7 +44,7 @@ const getMigrationQueryFromFile = async filepath => {
   } catch (e) {
     throw new UserError(`It is likely that the file ${filepath} contains (javascript) syntax errors`)
   }
-  if (!query) throw new UserError(`Must return SQL string from ${filepath} up()`)
+  if (!query || typeof query !== 'string') throw new UserError(`Must return SQL string from ${filepath} up()`)
   return query
 }
 
