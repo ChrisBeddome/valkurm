@@ -172,6 +172,9 @@ describe('entry executable', () => {
                 it('should output migration count of 0', () => {
                   expect(output.stdout).toMatch(/0 migrations run/)
                 })
+                it(`schema_migrations table should (still) contain 1 record`, async () => {
+                  expect(await tableRecordCount('schema_migrations')).toBe(1)
+                })
 
               })
             })
