@@ -1,4 +1,4 @@
-import { getConn, release } from '../dbConnect.js'
+import { getConn, release } from './dbConnect.js'
 
 const getAllTables = async () => {
   const getTablesSQL = `

@@ -1,4 +1,4 @@
-import { runCommand } from '../runHelpers.js'
+import { runCommand } from '../../helpers/runHelpers.js'
 
 import {
   restoreGlobalConfig,
@@ -8,14 +8,14 @@ import {
   deleteMigrationsDirectory,
   resetMigrationsDirectory,
   setupSchemaMigrationFiles
-} from '../fileHelpers.js'
+} from '../../helpers/fileHelpers.js'
 
 import {
   tableExists,
   tableIsEmpty,
   tableRecordCount,
   tableContainsRecord
-} from '../databaseHelpers.js'
+} from '../../helpers/databaseHelpers.js'
 
 describe('entry executable', () => {
   let command, code, output
