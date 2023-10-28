@@ -21,7 +21,7 @@ services:
       - db
     build:
       context: ../../
-      dockerfile: ./test/Dockerfile.test
+      dockerfile: ./test/docker/Dockerfile.test
       args:
         - TEST_WORKDIR=${TEST_WORKDIR}
         - PACKAGE_WORKDIR=${PACKAGE_WORKDIR}
@@ -31,8 +31,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ../test:/${TEST_WORKDIR}/
-      - ../package/:${PACKAGE_WORKDIR}/
+      - ../../test:/${TEST_WORKDIR}/
+      - ../../package/:${PACKAGE_WORKDIR}/
       - node_modules_test:${TEST_WORKDIR}/node_modules
       - node_modules_package:${PACKAGE_WORKDIR}/node_modules
     restart: "no"

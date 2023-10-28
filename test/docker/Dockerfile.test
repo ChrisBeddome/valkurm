@@ -14,8 +14,8 @@ RUN mkdir -p /etc/apt/keyrings; \
     apt update; \
     apt install nodejs -y;
 
-WORKDIR ${TEST_WORKDIR}
-COPY ./test .
-
 WORKDIR ${PACKAGE_WORKDIR}
 COPY ./package .
+
+WORKDIR ${TEST_WORKDIR}
+COPY ./test .
