@@ -10,14 +10,6 @@ const defaultConfig = Object.freeze({
 
 let config = {}
 
-const setConfig = newConfig => {
-  config = {...config, ...newConfig}
-}
-
-const getConfig = () => {
-  return config
-}
-
 let initialized = false
 const initializeConfig = async () => {
   if (!initialized) {
@@ -31,7 +23,14 @@ const initializeConfig = async () => {
   }
 }
 
-await initializeConfig()
+const setConfig = newConfig => {
+  config = {...config, ...newConfig}
+}
+
+const getConfig = async () => {
+  await initializeConfig()
+  return config
+}
 
 export {
   setConfig,

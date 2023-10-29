@@ -2,12 +2,12 @@ import mysql from 'mysql2/promise'
 import {getConfig} from './config.js'
 import UserError from './userError.js'
 
-const getDbConfig = () => {
+const getDbConfig = async () => {
   let dbConfig = {
     multipleStatements: true
   }
 
-  const globalConfig = getConfig()
+  const globalConfig = await getConfig()
   const requiredUserConfigKeys = ['host', 'port', 'user', 'password', 'database']
 
   requiredUserConfigKeys.forEach(key => {
@@ -25,7 +25,7 @@ let conn
 
 const getConn = async () => {
   if (!conn) {
-    conn = await mysql.createConnection(getDbConfig())
+    conn = await mysql.createConnection(await getDbConfig())
   } 
   return conn
 }

@@ -19,6 +19,7 @@
   "homepage": "https://github.com/ChrisBeddome/valkurm#readme",
   "devDependencies": {
     "jest": "^29.3.1",
-    "mysql2": "3.6.1"
+    "mysql2": "3.6.1",
+    "jest-serial-runner": "^1.2.1"
   }
 }

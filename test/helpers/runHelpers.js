@@ -1,7 +1,7 @@
 import {execSync} from 'child_process'
 
 const runCommand = command => {
-  let output = {}, exitCode
+  let output = {stdout: '', stderr: ''}, exitCode
   try {
     output.stdout = execSync(command).toString()
   } 
