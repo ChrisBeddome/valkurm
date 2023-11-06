@@ -47,6 +47,19 @@ const tableContainsRecord = async (tableName, expectedValues) => {
   return rows.length > 0
 }
 
+const tableContainsColumn = async (tableName, columnName) => {
+  const connection = await getConn()
+  const SQL = `
+    SELECT column_name FROM information_schema.columns 
+    WHERE table_schema = '${process.env.DB_NAME}' 
+    AND table_name = '${tableName}'
+    AND column_name = '${columnName}'
+  `
+  const [rows, fields] = await connection.query(SQL)
+  await release()
+  return rows.length > 0
+}
+
 const dropTables = async tableNames => {
   const connection = await getConn()
   tableNames.forEach(async table => {
@@ -66,5 +79,6 @@ export {
   tableIsEmpty,
   tableRecordCount,
   tableContainsRecord,
+  tableContainsColumn,
   cleanDatabase
 }
