@@ -9,6 +9,7 @@ const runCommand = command => {
     output.stderr = error.stderr.toString()
     exitCode = error.status
   }
+
   return [output, exitCode]
 }
 
