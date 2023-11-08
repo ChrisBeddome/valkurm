@@ -104,7 +104,8 @@ describe('when command = migrate-schema', () => {
       describe('When valid SQL returned from up()', () => {
         describe('when migrations dir contains create-table migration', () => {
           let output, code
-          beforeAll(() => {
+          beforeAll(async () => {
+            await cleanDatabase()
             setupSchemaMigrationFiles('single_create_test_table')
             // No idea why this doesn't work. Putting it before setupSchemaMigration works ????!?!??
             // [output, code] = runCommand(command)
@@ -112,7 +113,8 @@ describe('when command = migrate-schema', () => {
             output = res[0]
             code = res[1]
           })
-          afterAll(() => {
+          afterAll(async () => {
+            await cleanDatabase()
             resetMigrationsDirectory()
           })
           it(`schema_migrations table should contain 1 record`, async () => {
@@ -150,6 +152,59 @@ describe('when command = migrate-schema', () => {
           })
 
         })
+
+        describe('when multiple SQL statements in same migration', () => {
+          let output, code
+          beforeAll(async () => {
+            await cleanDatabase()
+            setupSchemaMigrationFiles('multiple_statements')
+            const res = runCommand(command)
+            output = res[0]
+            code = res[1]
+          })
+          afterAll(async () => {
+            await cleanDatabase()
+            resetMigrationsDirectory()
+          })
+          it(`schema_migrations table should contain 1 record`, async () => {
+            expect(await tableRecordCount('schema_migrations')).toBe(1)
+          })
+          it(`schema_migrations table should contain expected record`, async () => {
+            expect(await tableContainsRecord('schema_migrations', {name: '01_multiple_statements.js'})).toBe(true)
+          })
+          it('should create test_first table', async () => {
+            expect(await tableExists('test_first')).toBe(true)
+          })
+          it('should create test_second table', async () => {
+            expect(await tableExists('test_second')).toBe(true)
+          })
+          it('should output message indicating successful migration', () => {
+            expect(output.stdout).toMatch(/Migration complete/)
+          })
+          it('should output migration count of 1', () => {
+            expect(output.stdout).toMatch(/1 migration run/)
+          })
+
+          describe('when run a second time', () => {
+            beforeAll(() => {
+              setupSchemaMigrationFiles('multiple_statements')
+              const res = runCommand(command)
+              output = res[0]
+              code = res[1]
+            })
+            it('should output message indicating successful migration', () => {
+              expect(output.stdout).toMatch(/Migration complete/)
+            })
+            it('should output migration count of 0', () => {
+              expect(output.stdout).toMatch(/0 migrations run/)
+            })
+            it(`schema_migrations table should (still) contain 1 record`, async () => {
+              expect(await tableRecordCount('schema_migrations')).toBe(1)
+            })
+          })
+
+        })
+
       })
     })
 
@@ -196,7 +251,30 @@ describe('when command = migrate-schema', () => {
             expect(await tableRecordCount('schema_migrations')).toBe(1)
           })
         })
+      })
 
+      describe('When first invalid, second valid', () => {
+        let output, code
+        beforeAll(async () => {
+          await cleanDatabase()
+          setupSchemaMigrationFiles('first_invalid_second_valid')
+          const res = runCommand(command)
+          output = res[0]
+          code = res[1]
+        })
+        afterAll(async () => {
+          await cleanDatabase()
+          resetMigrationsDirectory()
+        })
+        it(`schema_migrations table should contain 0 records`, async () => {
+          expect(await tableIsEmpty('schema_migrations')).toBe(true)
+        })
+        it('should not create test1 table', async () => {
+          expect(await tableExists('test1')).toBe(false)
+        })
+        it('should output type error', () => {
+          expect(output.stderr).toMatch(/You have an error in your SQL syntax/)
+        })
       })
 
       describe('When both valid', () => {
@@ -242,7 +320,6 @@ describe('when command = migrate-schema', () => {
             expect(await tableRecordCount('schema_migrations')).toBe(2)
           })
         })
-
       })
 
     })
