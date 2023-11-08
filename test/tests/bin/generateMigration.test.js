@@ -6,11 +6,11 @@ import {
   getDataMigrationFiles
 } from '../../helpers/fileHelpers.js'
 
-describe('when command = generate-schema-migration', () => {
+describe('schema migration generation', () => {
   missingConfigExamples('npm run valkurm generate-schema-migration')
   generateMigrationExamples('npm run valkurm generate-schema-migration', getSchemaMigrationFiles)
 })
-describe('when command = generate-data-migration', () => {
+describe('data migration generation', () => {
   missingConfigExamples('npm run valkurm generate-data-migration')
   generateMigrationExamples('npm run valkurm generate-data-migration', getDataMigrationFiles)
 })
