@@ -2,5 +2,5 @@ export default {
   roots: ['../tests'],
   setupFilesAfterEnv: ['./testSetup.js'],
   globalTeardown: "./testTeardown.js",
-  runner: "jest-serial-runner"
+  maxWorkers: 1 //force tests to run serially
 }
